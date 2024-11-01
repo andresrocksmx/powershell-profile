@@ -21,6 +21,23 @@ if ([bool]([System.Security.Principal.WindowsIdentity]::GetCurrent()).IsSystem) 
     [System.Environment]::SetEnvironmentVariable('POWERSHELL_TELEMETRY_OPTOUT', 'true', [System.EnvironmentVariableTarget]::Machine)
 }
 
+# Example to switch profile to your own GitHub account when forked.
+#[System.Environment]::SetEnvironmentVariable('POWERSHELL_PROFILE_GITHUB_ACCOUNT', 'ChrisTitusTech', [System.EnvironmentVariableTarget]::User)
+$githubAccount = $env:POWERSHELL_PROFILE_GITHUB_ACCOUNT
+if([string]::IsNullOrEmpty($githubAccount)) {
+    $githubAccount = "ChrisTitusTech"
+    Write-Host "Using profile from GitHub account $githubAccount (Default)." -ForegroundColor Yellow
+    Write-Host "To load from different GitHub account, set this in environment variable 'POWERSHELL_PROFILE_GITHUB_ACCOUNT'"
+    Write-Host "Example => [System.Environment]::SetEnvironmentVariable('POWERSHELL_PROFILE_GITHUB_ACCOUNT', 'ChrisTitusTech', [System.EnvironmentVariableTarget]::User)"
+}
+else {
+    Write-Host "Using profile from GitHub account $githubAccount." -ForegroundColor Yellow
+}
+
+# Example to suspend updates while you work in
+#[System.Environment]::SetEnvironmentVariable('POWERSHELL_PROFILE_SUSPEND_UPDATES', 'true', [System.EnvironmentVariableTarget]::User)
+$pwshProfileSuspendUpdates = $env:POWERSHELL_PROFILE_SUSPEND_UPDATES
+
 # Initial GitHub.com connectivity check with 1 second timeout
 $canConnectToGitHub = Test-Connection github.com -Count 1 -Quiet -TimeoutSeconds 1
 
@@ -43,7 +60,7 @@ function Update-Profile {
     }
 
     try {
-        $url = "https://raw.githubusercontent.com/ChrisTitusTech/powershell-profile/main/Microsoft.PowerShell_profile.ps1"
+        $url = "https://raw.githubusercontent.com/$githubAccount/powershell-profile/main/Microsoft.PowerShell_profile.ps1"
         $oldhash = Get-FileHash $PROFILE
         Invoke-RestMethod $url -OutFile "$env:temp/Microsoft.PowerShell_profile.ps1"
         $newhash = Get-FileHash "$env:temp/Microsoft.PowerShell_profile.ps1"
@@ -57,7 +74,21 @@ function Update-Profile {
         Remove-Item "$env:temp/Microsoft.PowerShell_profile.ps1" -ErrorAction SilentlyContinue
     }
 }
-Update-Profile
+if($pwshProfileSuspendUpdates -ne 'true' -and $pwshProfileSuspendUpdates -ne '1') {
+    Update-Profile
+}
+else {
+    Write-Warning 'Automatic PowerShell Profile updates suspended ($env:POWERSHELL_PROFILE_SUSPEND_UPDATES). Use command Resume-Updates to active them.'
+}
+
+function Resume-Updates {
+    [System.Environment]::SetEnvironmentVariable('POWERSHELL_PROFILE_SUSPEND_UPDATES', $null, [System.EnvironmentVariableTarget]::User)
+    [System.Environment]::SetEnvironmentVariable('POWERSHELL_PROFILE_SUSPEND_UPDATES', $null, [System.EnvironmentVariableTarget]::Machine)
+}
+
+function Suspend-Updates {
+    [System.Environment]::SetEnvironmentVariable('POWERSHELL_PROFILE_SUSPEND_UPDATES', 'true', [System.EnvironmentVariableTarget]::User)
+}
 
 function Update-PowerShell {
     if (-not $global:canConnectToGitHub) {
@@ -179,7 +210,7 @@ function hb {
         return
     }
     
-    $uri = "http://bin.christitus.com/documents"
+    $uri = "    "
     try {
         $response = Invoke-RestMethod -Uri $uri -Method Post -Body $Content -ErrorAction Stop
         $hasteKey = $response.key
