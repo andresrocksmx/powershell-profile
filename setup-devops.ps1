@@ -49,7 +49,7 @@ if (!(Test-Path -Path $profilePath)) {
 }
 
 $backupUserProfile = $true
-$userProfile = "$profilePath\Profile.ps1"
+$userProfile = "$profilePath\Profile.ps1" # $PROFILE.CurrentUserAllHosts
 if (!(Test-Path -Path $userProfile -PathType Leaf)) {
     New-Item -Path $userProfile -ItemType File -Force | Out-Null
     Write-Host "User profile @ [$userProfile] has been created." -ForegroundColor Yellow
@@ -85,7 +85,7 @@ function Import-ToUserProfile {
         Write-Host "User profile @ [$userProfile] has been updated and is now loading script '$FileName'. Please restart your shell to reflect changes" -ForegroundColor Magenta
     }
 
-    & $userProfile
+    . $userProfile
 }
 
 Import-ToUserProfile -FileName 'andresrocksmx_profile.ps1'

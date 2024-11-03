@@ -14,3 +14,8 @@ function slproj {
 function home { 
     return $HOME 
 }
+
+function reload-profiles {
+    . $PROFILE.CurrentUserAllHosts
+    . $PROFILE
+}

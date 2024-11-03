@@ -103,7 +103,7 @@ function Import-ToUserProfile {
         $FileName
     )
 
-    $userProfile = "$profilePath\Profile.ps1"
+    $userProfile = "$profilePath\Profile.ps1" # $PROFILE.CurrentUserAllHosts
     if (!(Test-Path -Path $userProfile -PathType Leaf)) {
         New-Item -Path $userProfile -ItemType File -Force | Out-Null
         Write-Host "User profile @ [$userProfile] has been created." -ForegroundColor Yellow
