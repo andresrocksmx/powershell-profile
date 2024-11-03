@@ -49,10 +49,11 @@ function Update-ProfileScripts {
     }
 
     try {
+        $ProfileScriptName = $ProfileScriptName -replace '\', '/' # URL path friendly (forward slashes)
         $fileDirectoryPath = Split-Path $ProfileScriptName
-        $destinationFilePath = "$profilePath/$ProfileScriptName"
-        $tempFileDirectoryPath = "$env:temp/$fileDirectoryPath"
-        $tempFilePath = "$env:temp/$ProfileScriptName"
+        $destinationFilePath = "$profilePath\$ProfileScriptName" -replace '/', '\' # Windows file path friendly (backward slashes)
+        $tempFileDirectoryPath = "$env:temp\$fileDirectoryPath" -replace '/', '\' # Windows file path friendly (backward slashes)
+        $tempFilePath = "$env:temp\$ProfileScriptName" -replace '/', '\' # Windows file path friendly (backward slashes)
 
         New-Item -Path $tempFileDirectoryPath -ItemType Directory -Force | Out-Null
 
@@ -66,7 +67,7 @@ function Update-ProfileScripts {
         $newhash = Get-FileHash $tempFilePath
         if ($newhash.Hash -ne $oldhash.Hash) {
             Copy-Item -Path $tempFilePath -Destination $destinationFilePath -Force
-            Write-Host "New version of script '$ProfileScriptName' has been donwloaded and saved @ [$destinationFilePath]." -ForegroundColor Magenta
+            Write-Host "New version of script '$ProfileScriptName' has been downloaded and saved @ [$destinationFilePath]." -ForegroundColor Magenta
         }
     }
     catch {
