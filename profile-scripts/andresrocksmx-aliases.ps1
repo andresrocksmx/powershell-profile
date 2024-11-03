@@ -1,18 +1,18 @@
 function gpip() { (Invoke-WebRequest http://ifconfig.me/ip).Content }
 
-$projectDirectory = "$env:USERPROFILE\projects"
-if (Test-Path $projectDirectory )
+$projectsDirectoryPath = "$env:USERPROFILE\projects"
+if (Test-Path $projectsDirectoryPath )
 {
-    New-PSDrive -Name Projects -PSProvider FileSystem -Root $projectDirectory  -Description "Projects directory"
+    New-PSDrive -Name Projects -PSProvider FileSystem -Root $projectsDirectoryPath  -Description "Projects directory"
 }
 
-function proj { return $projectDirectory }
+function proj { return $projectsDirectoryPath }
 
-function sproj { Set-Location -Path $projectDirectory }
+function sproj { Set-Location -Path $projectsDirectoryPath }
 
-function oproj { explorer -Path $projectDirectory }
+function oproj { explorer -Path $projectsDirectoryPath }
 
-function lproj { Get-ChildItem -Path $projectDirectory -Force }
+function lproj { Get-ChildItem -Path $projectsDirectoryPath -Force }
 
 function slproj { 
     sproj
@@ -28,22 +28,14 @@ function reload-profiles {
     . $PROFILE
 }
 
-#############
+function Set-AzTheme {
+    oh-my-posh init pwsh --config https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/heads/main/themes/cloud-native-azure.omp.json | Invoke-Expression
+}
 
 # Find out if the current user identity is elevated (has admin rights)
 $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
 $principal = New-Object Security.Principal.WindowsPrincipal $identity
 $isAdmin = $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-
-# If so and the current host is a command line, then change to red color 
-# as warning to user that they are operating in an elevated context
-if (($host.Name -match "ConsoleHost") -and ($isAdmin))
-{
-     $host.UI.RawUI.BackgroundColor = "DarkRed"
-     $host.PrivateData.ErrorBackgroundColor = "White"
-     $host.PrivateData.ErrorForegroundColor = "DarkRed"
-     Clear-Host
-}
 
 # Compute file hashes - useful for checking successful downloads 
 function md5    { Get-FileHash -Algorithm MD5 $args }
