@@ -1,5 +1,13 @@
 function gpip() { (Invoke-WebRequest http://ifconfig.me/ip).Content }
 
+function tnc() {
+    Test-NetConnection -ComputerName $args[0] -Port $args[1]
+}
+
+function edit-hosts {
+    code 'C:\Windows\System32\drivers\etc\hosts'
+}
+
 $projectsDirectoryPath = "$env:USERPROFILE\projects"
 if (Test-Path $projectsDirectoryPath)
 {
