@@ -1,9 +1,9 @@
 function gpip() { (Invoke-WebRequest http://ifconfig.me/ip).Content }
 
 $projectsDirectoryPath = "$env:USERPROFILE\projects"
-if (Test-Path $projectsDirectoryPath )
+if (Test-Path $projectsDirectoryPath)
 {
-    New-PSDrive -Name Projects -PSProvider FileSystem -Root $projectsDirectoryPath  -Description "Projects directory"
+    New-PSDrive -Name Projects -PSProvider FileSystem -Root $projectsDirectoryPath -Description "Projects directory" | Out-Null
 }
 
 function proj { return $projectsDirectoryPath }
