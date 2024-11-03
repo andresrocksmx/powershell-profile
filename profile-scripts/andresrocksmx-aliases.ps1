@@ -10,3 +10,7 @@ function slproj {
     sproj
     lproj 
 }
+
+function home { 
+    return $HOME 
+}
