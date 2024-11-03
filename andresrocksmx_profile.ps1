@@ -49,7 +49,7 @@ function Update-ProfileScripts {
     }
 
     try {
-        $ProfileScriptName = $ProfileScriptName -replace '\', '/' # URL path friendly (forward slashes)
+        $ProfileScriptName = $ProfileScriptName -replace '\\', '/' # URL path friendly (forward slashes)
         $fileDirectoryPath = Split-Path $ProfileScriptName
         $destinationFilePath = "$profilePath\$ProfileScriptName" -replace '/', '\' # Windows file path friendly (backward slashes)
         $tempFileDirectoryPath = "$env:temp\$fileDirectoryPath" -replace '/', '\' # Windows file path friendly (backward slashes)
