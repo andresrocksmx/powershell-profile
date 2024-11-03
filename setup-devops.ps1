@@ -83,8 +83,9 @@ function Import-ToUserProfile {
         $(Get-Content -Path $userProfile -Raw).Trim("`r", "`n") | Out-File $userProfile
 
         Write-Host "User profile @ [$userProfile] has been updated and is now loading script '$FileName'. Please restart your shell to reflect changes" -ForegroundColor Magenta
-        & $userProfile
     }
+
+    & $userProfile
 }
 
 Import-ToUserProfile -FileName 'andresrocksmx_profile.ps1'
