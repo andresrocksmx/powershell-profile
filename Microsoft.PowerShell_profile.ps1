@@ -403,14 +403,14 @@ function Get-Theme {
     if (Test-Path -Path $PROFILE.CurrentUserAllHosts -PathType leaf) {
         $existingTheme = Select-String -Raw -Path $PROFILE.CurrentUserAllHosts -Pattern "oh-my-posh init pwsh --config"
         if ($null -ne $existingTheme) {
-            Invoke-Expression $existingTheme
+            #Invoke-Expression $existingTheme
             return
         }
     }
 
-    oh-my-posh init pwsh --config https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/cobalt2.omp.json | Invoke-Expression
+    oh-my-posh init pwsh --config https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/robbyrussell.omp.json | Invoke-Expression
 }
-Get-Theme
+#Get-Theme
 
 ## Final Line to set prompt
 if (Get-Command zoxide -ErrorAction SilentlyContinue) {
